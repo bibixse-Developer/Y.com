@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Link Youtube</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #fafcff;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px #0001;
+            padding: 32px 48px;
+            text-align: center;
+        }
+        h3 {
+            color: #333c77;
+            margin-top: 0;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 1.15rem;
+        }
+        a {
+            display: inline-block;
+            padding: 12px 28px;
+            background: #2d72d9;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        a:hover {
+            background: #18479c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>Link From +62 887-4272-7822</h3>
+        <p>Link🔗</p>
+        <a href="https://youtube.com/shorts/3JQx44dBrcc?si=O_FAvxbb1IIaZrdd" target="_blank">Play video</a>
+    </div>
+</body>
+</html>
