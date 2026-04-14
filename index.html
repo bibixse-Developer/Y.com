@@ -1,40 +1,247 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Link Youtube</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taman Kota Indonesia - tamankotaindonesia.my.id</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #fafcff;
-            margin: 0;
-            padding: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
+        *{margin:0;padding:0;box-sizing:border-box}
+        body{
+            font-family:Arial,sans-serif;
+            background:#228B22;
+            color:#fff;
+            line-height:1.6;
+            overflow-x:hidden
         }
-        .container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px #0001;
-            padding: 32px 48px;
-            text-align: center;
+        header{
+            background:rgba(0,100,0,0.95);
+            position:fixed;
+            width:100%;
+            top:0;
+            padding:15px 0;
+            z-index:100
         }
-        h3 {
-            color: #333c77;
-            margin-top: 0;
+        nav{
+            max-width:1200px;
+            margin:0 auto;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:0 20px
         }
-        p {
-            color: #666;
-            margin-bottom: 20px;
-            font-size: 1.15rem;
+        .logo{
+            font-size:22px;
+            font-weight:bold;
+            color:#fff;
+            text-decoration:none
         }
-        a {
-            display: inline-block;
-            padding: 12px 28px;
-            background: #2d72d9;
+        .menu{
+            display:flex;
+            gap:20px;
+            list-style:none
+        }
+        .menu a{
+            color:#fff;
+            text-decoration:none;
+            padding:10px 20px;
+            border-radius:25px;
+            transition:all .3s
+        }
+        .menu a:hover{
+            background:rgba(255,255,255,.2)
+        }
+        .hero{
+            height:100vh;
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            padding:80px 20px 20px
+        }
+        .hero h1{
+            font-size:48px;
+            margin-bottom:20px;
+            text-shadow:2px 2px 8px rgba(0,0,0,.7)
+        }
+        .hero p{
+            font-size:20px;
+            max-width:700px;
+            margin-bottom:40px
+        }
+        .btn{
+            display:inline-block;
+            background:#FF6B35;
+            color:#fff;
+            padding:18px 40px;
+            text-decoration:none;
+            border-radius:50px;
+            font-size:18px;
+            font-weight:bold;
+            box-shadow:0 8px 25px rgba(255,107,53,.4);
+            transition:all .3s
+        }
+        .btn:hover{
+            background:#E55A2B;
+            transform:translateY(-3px);
+            box-shadow:0 12px 35px rgba(255,107,53,.6)
+        }
+        .content{
+            max-width:1200px;
+            margin:0 auto;
+            padding:60px 20px
+        }
+        .section{
+            background:rgba(255,255,255,.1);
+            backdrop-filter:blur(10px);
+            padding:40px;
+            margin-bottom:40px;
+            border-radius:20px;
+            border:1px solid rgba(255,255,255,.2)
+        }
+        h2{
+            font-size:32px;
+            text-align:center;
+            margin-bottom:30px;
+            color:#FFD700
+        }
+        .taman-grid{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+            gap:25px;
+            margin-top:30px
+        }
+        .taman{
+            background:rgba(255,255,255,.15);
+            padding:30px;
+            border-radius:15px;
+            text-align:center;
+            transition:all .3s;
+            border:1px solid rgba(255,255,255,.1)
+        }
+        .taman:hover{
+            transform:translateY(-10px);
+            background:rgba(255,255,255,.25);
+            box-shadow:0 20px 40px rgba(0,0,0,.3)
+        }
+        .taman h3{
+            font-size:24px;
+            color:#FFD700;
+            margin-bottom:15px
+        }
+        .taman p{
+            margin-bottom:15px;
+            opacity:.9
+        }
+        .lokasi{
+            font-weight:bold;
+            color:#90EE90;
+            font-size:16px
+        }
+        footer{
+            background:rgba(0,100,0,.95);
+            padding:30px;
+            text-align:center
+        }
+        @media(max-width:768px){
+            .menu{display:none}
+            .hero h1{font-size:32px}
+            .hero p{font-size:16px}
+            .section{padding:25px 20px}
+            .taman-grid{grid-template-columns:1fr}
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="#" class="logo">🌳 tamankotaindonesia.my.id</a>
+            <ul class="menu">
+                <li><a href="#hero">Beranda</a></li>
+                <li><a href="#tamans">Taman Kota</a></li>
+                <li><a href="#info">Info</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="hero" class="hero">
+        <h1>🌿 TAMAN KOTA INDONESIA 🌳</h1>
+        <p>Direktori lengkap taman kota terbaik di seluruh Indonesia untuk rekreasi keluarga, olahraga, dan relaksasi hijau di tengah kota!</p>
+        <a href="#tamans" class="btn">🚀 Jelajahi Taman Kota</a>
+    </section>
+
+    <div class="content">
+        <section id="info" class="section">
+            <h2>💚 Kenapa Taman Kota Penting?</h2>
+            <p style="text-align:center;font-size:18px;max-width:800px;margin:0 auto 30px">
+                Taman kota adalah <strong>paru-paru kota</strong> yang menyegarkan udara, mengurangi stress, dan menjadi tempat berkumpul warga. Di Indonesia, ada ratusan taman kota indah dengan karakter unik setiap daerah!
+            </p>
+        </section>
+
+        <section id="tamans" class="section">
+            <h2>🏞️ Taman Kota Terbaik Indonesia</h2>
+            
+            <div class="taman-grid">
+                <div class="taman">
+                    <h3>🌸 Taman Suropati</h3>
+                    <p>Taman budaya dengan patung Jepang, kolam teratai, dan area yoga. Spot piknik keluarga favorit Jakarta.</p>
+                    <div class="lokasi">📍 Jakarta Pusat</div>
+                </div>
+
+                <div class="taman">
+                    <h3>🌈 Taman Pelangi</h3>
+                    <p>Taman modern dengan instalasi cahaya 7 warna dan playground anak. Buka 24 jam setiap hari!</p>
+                    <div class="lokasi">📍 Surabaya</div>
+                </div>
+
+                <div class="taman">
+                    <h3>⛵ Taman Bali Pulau Pinisi</h3>
+                    <p>Taman tematik replika kapal pinisi Bugis-Makassar dengan panorama Pantai Losari.</p>
+                    <div class="lokasi">📍 Makassar</div>
+                </div>
+
+                <div class="taman">
+                    <h3>🎬 Taman Film</h3>
+                    <p>Taman kreatif dengan mural seni jalanan dan spot foto Instagramable di kawasan Dago.</p>
+                    <div class="lokasi">📍 Bandung</div>
+                </div>
+
+                <div class="taman">
+                    <h3>🎪 Taman Bungkul</h3>
+                    <p>Taman paling ramai dengan panggung outdoor, festival bulanan, dan food festival.</p>
+                    <div class="lokasi">📍 Surabaya</div>
+                </div>
+
+                <div class="taman">
+                    <h3>🏃‍♂️ Taman Tebet</h3>
+                    <p>Taman modern dengan jogging track 2,5km, skatepark, dan food court kekinian.</p>
+                    <div class="lokasi">📍 Jakarta Selatan</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <h3>🌱 tamankotaindonesia.my.id</h3>
+        <p>© 2026 - Panduan Taman Kota Terlengkap Indonesia | <a href="help" style="color:#90EE90">Kontak Kami</a></p>
+    </footer>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(a=>{
+            a.addEventListener('click',e=>{
+                e.preventDefault();
+                document.querySelector(a.getAttribute('href')).scrollIntoView({
+                    behavior:'smooth'
+                })
+            })
+        })
+    </script>
+     <!-- fav icon -->
+     <link rel="shortcut icon"
+     herf="#" type="image/x-icon"
+    
+</body>
+</html>            background: #2d72d9;
             color: #fff;
             border-radius: 6px;
             text-decoration: none;
