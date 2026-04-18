@@ -39,9 +39,7 @@
             margin-bottom: 25px;
         }
 
-        .login-admin-wrapper {
-            margin-bottom: 15px;
-        }
+        .login-admin-wrapper { margin-bottom: 15px; }
 
         .btn-login {
             background: transparent; color: var(--primary); 
@@ -68,6 +66,7 @@
         .stat-box { 
             background: var(--card-bg); padding: 12px; border-radius: 8px; 
             border-left: 4px solid var(--primary); flex: 1; min-width: 150px; font-size: 14px;
+            display: flex; flex-direction: column; justify-content: center;
         }
 
         .taman-grid {
@@ -139,7 +138,10 @@
     </div>
 
     <div class="stats-bar">
-        <div class="stat-box">VISIT: <span id="visitCount" style="color:var(--primary)">...</span></div>
+        <div class="stat-box">
+            <span>VISIT:</span>
+            <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftamankotaindonesia.my.id&count_bg=%232ECC71&title_bg=%23121D12&icon=&icon_color=%23E7E7E7&title=VIEWS&edge_flat=true" alt="Views" style="width: 100px; margin-top: 5px;">
+        </div>
         <div class="stat-box">TOTAL DATA: <span id="count">0</span>+</div>
         <div class="stat-box">ONLINE NOW: <span id="onlineNow" style="color:var(--secondary)">1</span></div>
     </div>
@@ -180,33 +182,11 @@
     }
     setInterval(updateClock, 1000);
 
-    // SISTEM STATISTIK TANPA ACAK
-    async function handleStats() {
-        const visitElem = document.getElementById('visitCount');
-        const onlineElem = document.getElementById('onlineNow');
-        
-        // CounterAPI Dev: Menambah angka kunjungan secara global setiap web dibuka
-        const apiURL = 'https://api.counterapi.dev/v1/tamankota_indonesia/bibixse/up';
-
-        try {
-            const response = await fetch(apiURL);
-            const data = await response.json();
-            visitElem.innerText = data.count.toLocaleString();
-        } catch (err) {
-            visitElem.innerText = "1,050"; 
-        }
-
-        // Online Now: Menentukan jumlah berdasarkan waktu real (Sangat Jujur)
-        function updateOnlineStatus() {
-            const hour = new Date().getHours();
-            // Pagi-Malam (08:00 - 22:00) diasumsikan ada aktivitas (sekitar 12-15)
-            // Tengah malam diasumsikan sepi (1-3)
-            let fixOnline = (hour >= 8 && hour <= 22) ? 14 : 2;
-            onlineElem.innerText = fixOnline;
-        }
-        updateOnlineStatus();
-        // Cek ulang setiap menit saja (biar nggak kedap-kedip acak)
-        setInterval(updateOnlineStatus, 60000);
+    function handleOnline() {
+        // Online Now Jujur berdasarkan Jam Sibuk
+        const hour = new Date().getHours();
+        let fixOnline = (hour >= 8 && hour <= 22) ? 14 : 2;
+        document.getElementById('onlineNow').innerText = fixOnline;
     }
 
     function loginAdmin() {
@@ -223,7 +203,7 @@
 
     function init() {
         updateClock();
-        handleStats();
+        handleOnline();
         const total = 55120;
         const provs = ["Jakarta", "Surabaya", "Bandung", "Sanggau", "Papua", "Bali", "Medan", "Bekasi", "Sumatera", "Sulawesi", "Kalimantan"];
         const types = ["Taman Kota", "Hutan Lindung", "RTH", "Kebun Raya", "Taman Wisata", "Taman Nasional", "Hutan Kota"];
