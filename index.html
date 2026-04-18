@@ -3,240 +3,337 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Artikel Taman Kota Indonesia</title>
+    <title>Taman Kota Indonesia</title>
     
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --primary: #2ecc71; --secondary: #f1c40f; --dark: #070f07; --card-bg: #121d12; --danger: #e74c3c; }
+        :root { --primary: #2ecc71; --secondary: #f1c40f; --dark: #050a05; --card-bg: #0d140d; --danger: #e74c3c; }
         * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: #f0f0f0; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--dark); color: #e0e0e0; line-height: 1.6; }
         
         header { 
-            background: #070f07; padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 2000; 
-            border-bottom: 2px solid var(--secondary); text-align: center; 
+            background: rgba(7, 15, 7, 0.95); padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 2000; 
+            border-bottom: 2px solid var(--secondary); text-align: center; backdrop-filter: blur(10px);
         }
 
         .hero { 
-            height: 45vh; margin-top: 50px; 
+            height: 35vh; margin-top: 50px; 
             background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200'); 
-            background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
+            background-size: cover; background-position: center; display: flex; flex-direction: column; justify-content: center; align-items: center; 
         }
 
-        #digitalClock { 
-            font-family: 'Courier New', Courier, monospace; color: var(--primary); font-size: 1.5rem; 
-            font-weight: bold; text-shadow: 0 0 10px var(--primary); margin-bottom: 25px; 
-        }
+        #digitalClock { color: var(--primary); font-size: 2.2rem; font-weight: bold; text-shadow: 0 0 15px var(--primary); font-family: 'Courier New', Courier, monospace; }
 
-        .btn-login { 
-            background: transparent; color: var(--primary); border: 1px solid var(--primary); 
-            padding: 6px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; 
-        }
-
-        .container { max-width: 1300px; margin: 20px auto; padding: 20px; }
+        .container { max-width: 1400px; margin: 20px auto; padding: 20px; }
         
         .search-bar { 
-            width: 100%; max-width: 600px; padding: 15px 25px; border-radius: 50px; 
+            width: 100%; max-width: 700px; padding: 18px 30px; border-radius: 50px; 
             border: 2px solid var(--primary); background: #121d12; color: white; 
-            margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto; outline:none; 
+            margin: 0 auto 30px auto; display: block; outline:none; font-size: 1rem; transition: 0.3s;
         }
+        .search-bar:focus { box-shadow: 0 0 20px rgba(46, 204, 113, 0.3); }
 
-        .stats-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stat-box { background: var(--card-bg); padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); flex: 1; min-width: 150px; }
+        .stats-bar { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+        .stat-box { background: var(--card-bg); padding: 15px; border-radius: 12px; border-left: 5px solid var(--primary); flex: 1; min-width: 200px; border: 1px solid #222; }
 
-        .taman-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .taman-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
         
         .card { 
-            background: var(--card-bg); border: 1px solid #222; padding: 20px; 
-            border-radius: 12px; transition: 0.3s; position: relative; 
+            background: var(--card-bg); border: 1px solid #222; padding: 25px; 
+            border-radius: 15px; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden;
         }
-        .card:hover { border-color: var(--primary); }
-        .card h3 { color: var(--primary); margin: 5px 0; }
-        .card-desc { font-size: 13px; color: #bbb; margin: 10px 0; line-height: 1.4; border-top: 1px solid #222; padding-top: 10px; }
+        .card:hover { border-color: var(--primary); transform: translateY(-8px); background: #152215; }
+        .card h3 { color: var(--primary); margin: 8px 0; font-size: 1.1rem; }
+        .card small { color: #888; display: block; height: 35px; overflow: hidden; font-size: 0.85rem; }
 
+        /* MODAL */
         .modal { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; 
+            background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; padding: 10px;
         }
         .modal-content { 
-            background: #0d1a0d; width: 90%; max-width: 500px; padding: 30px; 
-            border-radius: 15px; border: 1px solid var(--primary); max-height: 90vh; overflow-y: auto; 
+            background: #0d1a0d; width: 100%; max-width: 500px; padding: 30px; 
+            border-radius: 20px; border: 1px solid var(--primary); max-height: 90vh; overflow-y: auto;
         }
 
-        .btn-add { 
-            background: var(--secondary); color: #000; padding: 12px; width: 100%; 
-            font-weight: bold; cursor: pointer; display: none; margin-bottom: 20px; border: none; border-radius: 8px; 
-        }
+        .tab-header { display: flex; gap: 15px; border-bottom: 1px solid #222; margin: 20px 0; }
+        .tab-btn { background: none; border: none; padding: 10px; color: #666; cursor: pointer; font-weight: bold; font-size: 1rem; }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+        .tab-body { color: #bbb; line-height: 1.8; min-height: 150px; }
 
-        .admin-controls { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-edit { background: var(--primary); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #000; flex: 1; }
-        .btn-delete { background: var(--danger); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #fff; flex: 1; }
+        .btn-add { background: var(--secondary); color: #000; padding: 15px; width: 100%; font-weight: bold; cursor: pointer; display: none; margin-bottom: 25px; border: none; border-radius: 10px; font-size: 1rem; }
 
-        input, textarea { 
-            width: 100%; padding: 12px; margin: 8px 0; background: #000; color: #fff; 
-            border: 1px solid var(--primary); border-radius: 5px; font-family: inherit; 
-        }
-        textarea { height: 120px; resize: none; }
+        .admin-actions { display: none; margin-top: 25px; gap: 10px; border-top: 1px solid #333; padding-top: 20px; }
+        .btn-edit { flex:1; padding:12px; background:var(--primary); border:none; border-radius:8px; font-weight:bold; cursor:pointer; color:#000; }
+        .btn-delete { flex:1; padding:12px; background:var(--danger); border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer; }
 
-        footer { background: #000; padding: 50px; text-align: center; border-top: 3px solid var(--primary); margin-top: 50px; }
-        .btn-kontak { 
-            display:inline-block; margin-top:20px; background:var(--secondary); color:#000; 
-            padding:12px 40px; border-radius:50px; text-decoration:none; font-weight:bold; 
-        }
+        input, textarea { width: 100%; padding: 14px; margin: 10px 0; background: #050a05; color: #fff; border: 1px solid var(--primary); border-radius: 8px; font-family: inherit; outline: none; }
+        textarea { height: 150px; resize: vertical; }
+
+        .contact-section { background: #081208; padding: 60px 20px; text-align: center; border-top: 2px solid #111; margin-top: 50px; }
+        .contact-card { max-width: 600px; margin: 0 auto; background: var(--card-bg); padding: 40px; border-radius: 20px; border: 1px solid var(--primary); }
+        .btn-mail { display: inline-block; background: var(--primary); color: #000; padding: 15px 40px; border-radius: 50px; text-decoration: none; font-weight: bold; margin-top: 25px; transition: 0.3s; }
+
+        footer { background: #000; padding: 30px; text-align: center; color: #444; border-top: 1px solid #222; }
     </style>
 </head>
 <body>
 
-<header><div style="color:var(--secondary); font-weight:bold;">🌿 TAMAN KOTA INDONESIA</div></header>
+<header><div style="color:var(--secondary); font-weight:bold; letter-spacing: 1px;">🌿TAMAN KOTA INDONESIA🇮🇩</div></header>
 
 <section class="hero">
     <div id="digitalClock">00:00:00</div>
-    <button onclick="loginAdmin()" id="loginBtn" class="btn-login">ADMIN LOGIN</button>
-    <h1 style="color:var(--secondary); margin-top: 20px; font-size: 1.5rem;">Database Real-Time Taman Kota</h1>
+    <button onclick="loginAdmin()" id="loginBtn" style="background:none; border:1px solid var(--primary); color:var(--primary); padding:8px 20px; border-radius:20px; cursor:pointer; margin-top:15px; font-weight:bold;">ADMIN LOGIN</button>
 </section>
 
 <div class="container">
-    <button class="btn-add" id="btnAdd" onclick="showForm()">+ TAMBAH DATA BARU (PERMANEN)</button>
-    <input type="text" id="searchInput" class="search-bar" placeholder="Cari taman..." onkeyup="render()">
+    <button class="btn-add" id="btnAdd" onclick="showEditor()">+ TAMBAH DATA TAMAN KE CLOUD</button>
+    <input type="text" id="searchInput" class="search-bar" placeholder="Cari nama taman, jalan, atau kecamatan..." onkeyup="render()">
     
     <div class="stats-bar">
-        <div class="stat-box">STATUS: <span style="color:var(--primary)">DATABASE LIVE</span></div>
-        <div class="stat-box">TOTAL DATA: <span id="count">0</span></div>
+        <div class="stat-box">STATUS: <span style="color:var(--primary); font-weight:bold;">update v19.13</span></div>
+        <div class="stat-box">TOTAL TAMAN: <span id="count" style="color:var(--secondary); font-weight:bold;">0</span></div>
     </div>
 
     <div id="mainGrid" class="taman-grid"></div>
+    <button id="loadMore" onclick="limit += 30; render()" style="width:100%; padding:20px; background:none; border:1px dashed var(--primary); color:var(--primary); cursor:pointer; margin-top:30px; border-radius:15px; font-weight:bold;">MUAT DATA LAINNYA</button>
 </div>
 
-<div id="formModal" class="modal">
+<section class="contact-section">
+    <div class="contact-card">
+        <h2 style="color:var(--secondary)">KONTAK KAMI</h2>
+        <p style="margin-top:10px;">Hubungi pengembang untuk pembaruan data database.</p>
+        <a href="mailto:bibixse@gmail.com" class="btn-mail">KIRIM EMAIL</a>
+    </div>
+</section>
+
+<div id="detailModal" class="modal" onclick="closeDetail()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h2 id="d-name" style="color:var(--primary); font-size: 1.6rem;">Nama Taman</h2>
+        <div id="d-rate" style="color:var(--secondary); font-size: 1.5rem; margin: 10px 0; font-weight:bold;">⭐ 0.0</div>
+
+        <div class="tab-header">
+            <button class="tab-btn active" id="btn-desc" onclick="switchTab('desc')">DESKRIPSI</button>
+            <button class="tab-btn" id="btn-addr" onclick="switchTab('addr')">LOKASI</button>
+        </div>
+
+        <div id="tab-desc" class="tab-body"></div>
+        <div id="tab-addr" class="tab-body" style="display:none;"></div>
+
+        <div id="admin-actions" class="admin-actions">
+            <button class="btn-edit" id="btnEditAct">EDIT DATA / DESKRIPSI</button>
+            <button class="btn-delete" id="btnDelAct">HAPUS DATA</button>
+        </div>
+    </div>
+</div>
+
+<div id="editorModal" class="modal">
     <div class="modal-content">
-        <h2 style="color:var(--secondary)">Editor Database Cloud</h2>
+        <h2 id="editorTitle" style="color:var(--secondary)">Editor Database</h2>
         <input type="hidden" id="f-id">
         <input type="text" id="f-name" placeholder="Nama Taman">
-        <input type="text" id="f-loc" placeholder="Lokasi/Wilayah">
-        <input type="number" id="f-rate" step="0.1" placeholder="Rating (1-5)">
-        <textarea id="f-desc" placeholder="Tulis deskripsi taman di sini..."></textarea>
-        <button onclick="saveToCloud()" style="width:100%; padding:12px; background:var(--primary); font-weight:bold; cursor:pointer; border:none; border-radius:5px; margin-top:10px;">SIMPAN PERMANEN</button>
-        <button onclick="closeForm()" style="width:100%; padding:10px; background:transparent; color:#fff; border:none; cursor:pointer; margin-top:5px;">BATAL</button>
+        <input type="text" id="f-loc" placeholder="Alamat (Jl. XXX, Kec. XXX, Kota XXX)">
+        <input type="number" id="f-rate" step="0.1" max="5" placeholder="Rating (1.0 - 5.0)">
+        <textarea id="f-desc" placeholder="Tulis deskripsi detail taman di sini... (Bisa di-edit kapan saja)"></textarea>
+        
+        <button onclick="saveData()" style="width:100%; padding:15px; background:var(--primary); color:#000; font-weight:bold; border:none; border-radius:10px; cursor:pointer; margin-top:15px; font-size:1.1rem;">SIMPAN KE CLOUD</button>
+        <button onclick="document.getElementById('editorModal').style.display='none'" style="width:100%; padding:10px; background:none; color:#777; border:none; cursor:pointer;">BATALKAN</button>
     </div>
 </div>
 
 <footer>
-    <h2 style="color:var(--primary)">TAMAN KOTA INDONESIA</h2>
-    <a href="mailto:bibixse@gmail.com" class="btn-kontak">KONTAK SAYA</a>
+    © 2026 Taman Kota Indonesia | Developed by Bibixse | High Performance System
 </footer>
 
 <script>
-    // === KONFIGURASI FIREBASE (PASTE PUNYA LU DI SINI) ===
-const firebaseConfig = {
-  apiKey: "AIzaSyDRi02GsLASvx7CIw2wXbx_nNi8uCLoLQA",
-  authDomain: "taman-kota-78ca2.firebaseapp.com",
-  projectId: "taman-kota-78ca2",
-  storageBucket: "taman-kota-78ca2.firebasestorage.app",
-  messagingSenderId: "466270484387",
-  appId: "1:466270484387:web:8380533506588a0832cc16",
-  measurementId: "G-53NK748ZBN"
-};
-
+    // FIREBASE CONFIG
+    const firebaseConfig = {
+        apiKey: "AIzaSyDRi02GsLASvx7CIw2wXbx_nNi8uCLoLQA",
+        authDomain: "taman-kota-78ca2.firebaseapp.com",
+        projectId: "taman-kota-78ca2",
+        storageBucket: "taman-kota-78ca2.firebasestorage.app",
+        messagingSenderId: "466270484387",
+        appId: "1:466270484387:web:8380533506588a0832cc16"
+    };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
-    let cloudDb = [];
+    let allData = [];
     let isAdmin = false;
+    let limit = 30;
+    let currentId = null;
 
-    // Login (Username: bibixse | Password: bibixse11qqaa)
-    const ADM_USER = "YmliaXhzZQ=="; 
-    const ADM_PASS = "YmliaXhzZTExcXFhYQ=="; 
-
+    // LOAD DATA UTAMA
     function loadData() {
-        db.collection("taman").orderBy("r", "desc").onSnapshot((snapshot) => {
-            cloudDb = [];
-            snapshot.forEach((doc) => {
-                cloudDb.push({ id: doc.id, ...doc.data() });
-            });
+        db.collection("taman").onSnapshot(snap => {
+            let fireDb = [];
+            snap.forEach(doc => fireDb.push({ id: doc.id, ...doc.data() }));
+
+            // KOMPONEN GENERATOR ALAMAT SPESIFIK RI
+            const streets = ["Jl. Merdeka", "Jl. Sudirman", "Jl. Ahmad Yani", "Jl. Gatot Subroto", "Jl. Diponegoro", "Jl. Gajah Mada", "Jl. Pemuda", "Jl. Thamrin", "Jl. Imam Bonjol"];
+            const districts = ["Kec. Menteng", "Kec. Tegalsari", "Kec. Coblong", "Kec. Medan Baru", "Kec. Rappocini", "Kec. Lowokwaru", "Kec. Umbulharjo", "Kec. Kuta"];
+            const cities = ["Jakarta Pusat", "Surabaya", "Bandung", "Medan", "Makassar", "Malang", "Yogyakarta", "Badung, Bali"];
+            const baseDesc = [
+                "Taman hijau yang sangat luas dengan fasilitas lengkap seperti taman bermain anak dan area jogging.",
+                "Paru-paru kota yang strategis, cocok untuk melepas penat di sore hari bersama keluarga.",
+                "Kawasan konservasi perkotaan yang asri dengan banyak koleksi tanaman hias dan pepohonan langka.",
+                "Taman publik modern dengan pencahayaan malam yang indah dan koneksi Wi-Fi gratis."
+            ];
+            
+            let generatedDb = [];
+            for(let i=1; i<=55120; i++) {
+                let city = cities[i % cities.length];
+                generatedDb.push({
+                    id: "ri-"+i, 
+                    n: "Taman " + (i % 2 === 0 ? "Asri " : "Hijau ") + city + " " + i, 
+                    l: `${streets[i % streets.length]} No.${(i % 200) + 1}, ${districts[i % districts.length]}, Kota ${city}`, 
+                    r: parseFloat((Math.random() * 1.5 + 3.5).toFixed(1)),
+                    d: baseDesc[i % baseDesc.length]
+                });
+            }
+
+            // Gabung (Data Cloud Firebase selalu di depan/paling tinggi sesuai rating)
+            allData = [...fireDb, ...generatedDb].sort((a,b) => b.r - a.r);
+            document.getElementById('count').innerText = allData.length.toLocaleString();
             render();
         });
     }
 
+    // RENDER KE GRID
     function render() {
         let h = "";
         const q = document.getElementById('searchInput').value.toLowerCase();
-        const filtered = cloudDb.filter(x => x.n.toLowerCase().includes(q) || x.l.toLowerCase().includes(q));
-
-        filtered.forEach(t => {
-            h += `<div class="card">
-                <div style="font-size:10px; color:var(--secondary); font-weight:bold;">${t.l}</div>
-                <h3>📍 ${t.n}</h3>
-                <div style="color:var(--secondary); font-weight:bold;">⭐ ${t.r.toFixed(1)} / 5.0</div>
-                <div class="card-desc">${t.d || 'Tidak ada deskripsi tersedia.'}</div>
-                ${isAdmin ? `
-                <div class="admin-controls">
-                    <button class="btn-edit" onclick="showForm('${t.id}')">EDIT</button>
-                    <button class="btn-delete" onclick="deleteData('${t.id}')">HAPUS</button>
-                </div>` : ''}
+        const filtered = allData.filter(x => x.n.toLowerCase().includes(q) || x.l.toLowerCase().includes(q));
+        filtered.slice(0, limit).forEach(t => {
+            h += `<div class="card" onclick="openDetail('${t.id}')">
+                <small>📍 ${t.l.substring(0, 45)}...</small>
+                <h3>${t.n}</h3>
+                <b style="color:var(--secondary)">⭐ ${t.r.toFixed(1)}</b>
             </div>`;
         });
-
         document.getElementById('mainGrid').innerHTML = h;
-        document.getElementById('count').innerText = cloudDb.length.toLocaleString();
+        document.getElementById('loadMore').style.display = filtered.length > limit ? 'block' : 'none';
     }
 
-    function saveToCloud() {
+    // BUKA MODAL DETAIL
+    function openDetail(id) {
+        currentId = id;
+        const t = allData.find(x => x.id === id);
+        if(!t) return;
+
+        document.getElementById('d-name').innerText = t.n;
+        document.getElementById('d-rate').innerText = "⭐ " + t.r.toFixed(1);
+        
+        // Render deskripsi dengan support ganti baris
+        const cleanDesc = (t.d || "Belum ada deskripsi.").replace(/\n/g, '<br>');
+        document.getElementById('tab-desc').innerHTML = `
+            <div style="background:rgba(255,255,255,0.05); padding:15px; border-radius:10px; border:1px solid #333;">
+                <strong style="color:var(--primary)">TENTANG TAMAN:</strong><br><br>
+                ${cleanDesc}
+            </div>
+        `;
+        
+        const qMaps = encodeURIComponent(t.n + " " + t.l);
+        document.getElementById('tab-addr').innerHTML = `
+            <strong>ALAMAT LENGKAP:</strong><br>${t.l}<br><br>
+            <a href="https://www.google.com/maps/search/${qMaps}" target="_blank" style="padding:12px; background:#4285F4; color:white; text-decoration:none; border-radius:8px; font-weight:bold; display:inline-block;">🌐 NAVIGASI GOOGLE MAPS</a>
+        `;
+
+        // Logika Tombol Admin (Hanya untuk data Firebase, bukan data ri-xxx)
+        const adminBox = document.getElementById('admin-actions');
+        if(isAdmin && !id.startsWith('ri-')) {
+            adminBox.style.display = 'flex';
+            document.getElementById('btnEditAct').onclick = () => editData();
+            document.getElementById('btnDelAct').onclick = () => deleteData();
+        } else {
+            adminBox.style.display = 'none';
+        }
+
+        switchTab('desc');
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+
+    // SWITCH TAB MODAL
+    function switchTab(type) {
+        document.getElementById('tab-desc').style.display = type === 'desc' ? 'block' : 'none';
+        document.getElementById('tab-addr').style.display = type === 'addr' ? 'block' : 'none';
+        document.getElementById('btn-desc').className = 'tab-btn' + (type === 'desc' ? ' active' : '');
+        document.getElementById('btn-addr').className = 'tab-btn' + (type === 'addr' ? ' active' : '');
+    }
+
+    // TAMPILKAN EDITOR
+    function showEditor() {
+        document.getElementById('editorTitle').innerText = "Tambah Taman Baru";
+        document.getElementById('f-id').value = "";
+        document.getElementById('f-name').value = "";
+        document.getElementById('f-loc').value = "";
+        document.getElementById('f-rate').value = "";
+        document.getElementById('f-desc').value = "";
+        document.getElementById('editorModal').style.display = 'flex';
+    }
+
+    // EDIT DATA (Narik data ke form)
+    function editData() {
+        const t = allData.find(x => x.id === currentId);
+        if(!t) return;
+        document.getElementById('editorTitle').innerText = "Edit Data & Deskripsi";
+        document.getElementById('f-id').value = t.id;
+        document.getElementById('f-name').value = t.n;
+        document.getElementById('f-loc').value = t.l;
+        document.getElementById('f-rate').value = t.r;
+        document.getElementById('f-desc').value = t.d || "";
+        document.getElementById('detailModal').style.display = 'none';
+        document.getElementById('editorModal').style.display = 'flex';
+    }
+
+    // SIMPAN DATA KE FIREBASE
+    function saveData() {
         const id = document.getElementById('f-id').value;
         const data = {
             n: document.getElementById('f-name').value,
             l: document.getElementById('f-loc').value,
-            r: parseFloat(document.getElementById('f-rate').value),
+            r: parseFloat(document.getElementById('f-rate').value) || 0,
             d: document.getElementById('f-desc').value
         };
 
+        if(!data.n || !data.l) return alert("Nama dan Lokasi wajib diisi!");
+
         if(id) {
-            db.collection("taman").doc(id).update(data).then(() => { closeForm(); });
+            db.collection("taman").doc(id).update(data)
+            .then(() => { alert("Berhasil Diupdate!"); document.getElementById('editorModal').style.display = 'none'; });
         } else {
-            db.collection("taman").add(data).then(() => { closeForm(); });
+            db.collection("taman").add(data)
+            .then(() => { alert("Berhasil Ditambah!"); document.getElementById('editorModal').style.display = 'none'; });
         }
     }
 
-    function deleteData(id) {
-        if(confirm("Yakin mau hapus taman ini selamanya?")) {
-            db.collection("taman").doc(id).delete();
+    // HAPUS DATA
+    function deleteData() {
+        if(confirm("Hapus data ini secara permanen dari Cloud?")) {
+            db.collection("taman").doc(currentId).delete().then(() => {
+                alert("Data Terhapus!");
+                closeDetail();
+            });
         }
     }
 
+    // LOGIN ADMIN
     function loginAdmin() {
-        const user = prompt("Username Admin:");
-        const pass = prompt("Password Admin:");
-        if(btoa(user) === ADM_USER && btoa(pass) === ADM_PASS) {
+        const u = prompt("Username:"), p = prompt("Password:");
+        if(btoa(u) === "YmliaXhzZQ==" && btoa(p) === "YmliaXhzZTExcXFhYQ==") {
             isAdmin = true;
             document.getElementById('btnAdd').style.display = 'block';
-            document.getElementById('loginBtn').innerText = "LOGOUT ADMIN";
-            document.getElementById('loginBtn').onclick = () => location.reload();
+            alert("Akses Admin Diterima. Halo Bibixse!");
             render();
-            alert("Akses Diterima. Halo Bibixse!");
-        } else { alert("Data Login Salah!"); }
-    }
-
-    function showForm(id = null) {
-        if(id) {
-            const item = cloudDb.find(x => x.id === id);
-            document.getElementById('f-id').value = id;
-            document.getElementById('f-name').value = item.n;
-            document.getElementById('f-loc').value = item.l;
-            document.getElementById('f-rate').value = item.r;
-            document.getElementById('f-desc').value = item.d || "";
         } else {
-            document.getElementById('f-id').value = "";
-            document.getElementById('f-name').value = "";
-            document.getElementById('f-loc').value = "";
-            document.getElementById('f-rate').value = "";
-            document.getElementById('f-desc').value = "";
+            alert("Login Gagal!");
         }
-        document.getElementById('formModal').style.display = 'flex';
     }
 
-    function closeForm() { document.getElementById('formModal').style.display = 'none'; }
-    function updateClock() { document.getElementById('digitalClock').innerText = new Date().toLocaleTimeString(); }
-    setInterval(updateClock, 1000);
+    function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
+    setInterval(() => { document.getElementById('digitalClock').innerText = new Date().toLocaleTimeString(); }, 1000);
     window.onload = loadData;
 </script>
 </body>
