@@ -167,8 +167,9 @@
     let limit = 30;
     let isAdmin = false;
 
-    // Password yang di-encode (11qq@@aa menjadi MTFxcUBBYWE=)
-    const SECRET_KEY = "MTFxcUBBYWE="; 
+    // DATA DI-ENCODE BIAR GAK KELIATAN PAS DI INSPECT
+    const ADM_MAIL = "YmliaXhzZUBnbWFpbC5jb20="; // bibixse@gmail.com
+    const ADM_PASS = "MTFxcUBBYWE=";             // 11qq@@aa
 
     function updateClock() {
         const now = new Date();
@@ -180,18 +181,19 @@
     setInterval(updateClock, 1000);
 
     function loginAdmin() {
+        const email = prompt("Masukkan Email Admin:");
         const pass = prompt("Masukkan Password Admin:");
         
-        // Cek password dengan verifikasi Base64
-        if(btoa(pass) === SECRET_KEY) {
+        // Verifikasi Email & Password sekaligus
+        if(btoa(email) === ADM_MAIL && btoa(pass) === ADM_PASS) {
             isAdmin = true;
             document.getElementById('btnAdd').style.display = 'block';
             document.getElementById('loginBtn').innerText = "LOGOUT ADMIN";
             document.getElementById('loginBtn').onclick = () => location.reload();
             render();
-            alert("Akses Admin Aktif!");
+            alert("Akses Admin Aktif! Halo Bibixse.");
         } else {
-            alert("Password Salah! Akses Ditolak.");
+            alert("Email atau Password Salah! Akses Ditolak.");
         }
     }
 
