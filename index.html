@@ -9,29 +9,81 @@
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
 
     <style>
-        :root { --primary: #2ecc71; --secondary: #f1c40f; --dark: #070f07; --card-bg: #121d12; }
+        :root { --primary: #2ecc71; --secondary: #f1c40f; --dark: #070f07; --card-bg: #121d12; --danger: #e74c3c; }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: #f0f0f0; }
-        header { background: #070f07; padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 2000; border-bottom: 2px solid var(--secondary); text-align: center; }
-        .hero { height: 45vh; margin-top: 50px; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200'); background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
-        #digitalClock { font-family: 'Courier New', Courier, monospace; color: var(--primary); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--primary); margin-bottom: 25px; }
-        .btn-login { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 6px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
+        
+        header { 
+            background: #070f07; padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 2000; 
+            border-bottom: 2px solid var(--secondary); text-align: center; 
+        }
+
+        .hero { 
+            height: 45vh; margin-top: 50px; 
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200'); 
+            background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; 
+        }
+
+        #digitalClock { 
+            font-family: 'Courier New', Courier, monospace; color: var(--primary); font-size: 1.5rem; 
+            font-weight: bold; text-shadow: 0 0 10px var(--primary); margin-bottom: 25px; 
+        }
+
+        .btn-login { 
+            background: transparent; color: var(--primary); border: 1px solid var(--primary); 
+            padding: 6px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; 
+        }
+
         .container { max-width: 1300px; margin: 20px auto; padding: 20px; }
-        .search-bar { width: 100%; max-width: 600px; padding: 15px 25px; border-radius: 50px; border: 2px solid var(--primary); background: #121d12; color: white; margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto; outline:none; }
+        
+        .search-bar { 
+            width: 100%; max-width: 600px; padding: 15px 25px; border-radius: 50px; 
+            border: 2px solid var(--primary); background: #121d12; color: white; 
+            margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto; outline:none; 
+        }
+
         .stats-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
         .stat-box { background: var(--card-bg); padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); flex: 1; min-width: 150px; }
+
         .taman-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border: 1px solid #222; padding: 20px; border-radius: 12px; transition: 0.3s; }
+        
+        .card { 
+            background: var(--card-bg); border: 1px solid #222; padding: 20px; 
+            border-radius: 12px; transition: 0.3s; position: relative; 
+        }
         .card:hover { border-color: var(--primary); }
-        .card h3 { color: var(--primary); margin: 10px 0; }
-        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; }
-        .modal-content { background: #0d1a0d; width: 90%; max-width: 500px; padding: 30px; border-radius: 15px; border: 1px solid var(--primary); }
-        .btn-add { background: var(--secondary); color: #000; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; display: none; margin-bottom: 20px; border: none; border-radius: 8px; }
-        .admin-edit-btn { background: var(--primary); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 10px; }
-        input[type="text"], input[type="number"] { width: 100%; padding: 10px; margin: 10px 0; background: #000; color: #fff; border: 1px solid var(--primary); border-radius: 5px; }
-        .load-more { width: 100%; padding: 15px; background: #1a2a1a; color: var(--primary); border: 1px dashed var(--primary); cursor: pointer; margin-top: 20px; font-weight: bold; border-radius: 10px; }
+        .card h3 { color: var(--primary); margin: 5px 0; }
+        .card-desc { font-size: 13px; color: #bbb; margin: 10px 0; line-height: 1.4; border-top: 1px solid #222; padding-top: 10px; }
+
+        .modal { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; 
+        }
+        .modal-content { 
+            background: #0d1a0d; width: 90%; max-width: 500px; padding: 30px; 
+            border-radius: 15px; border: 1px solid var(--primary); max-height: 90vh; overflow-y: auto; 
+        }
+
+        .btn-add { 
+            background: var(--secondary); color: #000; padding: 12px; width: 100%; 
+            font-weight: bold; cursor: pointer; display: none; margin-bottom: 20px; border: none; border-radius: 8px; 
+        }
+
+        .admin-controls { display: flex; gap: 10px; margin-top: 15px; }
+        .btn-edit { background: var(--primary); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #000; flex: 1; }
+        .btn-delete { background: var(--danger); border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; color: #fff; flex: 1; }
+
+        input, textarea { 
+            width: 100%; padding: 12px; margin: 8px 0; background: #000; color: #fff; 
+            border: 1px solid var(--primary); border-radius: 5px; font-family: inherit; 
+        }
+        textarea { height: 120px; resize: none; }
+
         footer { background: #000; padding: 50px; text-align: center; border-top: 3px solid var(--primary); margin-top: 50px; }
-        .btn-kontak { display:inline-block; margin-top:20px; background:var(--secondary); color:#000; padding:12px 40px; border-radius:50px; text-decoration:none; font-weight:bold; }
+        .btn-kontak { 
+            display:inline-block; margin-top:20px; background:var(--secondary); color:#000; 
+            padding:12px 40px; border-radius:50px; text-decoration:none; font-weight:bold; 
+        }
     </style>
 </head>
 <body>
@@ -41,44 +93,42 @@
 <section class="hero">
     <div id="digitalClock">00:00:00</div>
     <button onclick="loginAdmin()" id="loginBtn" class="btn-login">ADMIN LOGIN</button>
-    <h1 style="color:var(--secondary); margin-top: 20px; font-size: 1.5rem;">Artikel Taman Kota Indonesia</h1>
-    <p style="margin-top: 10px; padding: 0 10px;">seluruh taman yang ada di indonesia deskripsi, alamat, dan rating lengkap</p>
+    <h1 style="color:var(--secondary); margin-top: 20px; font-size: 1.5rem;">Database Real-Time Taman Kota</h1>
 </section>
 
 <div class="container">
     <button class="btn-add" id="btnAdd" onclick="showForm()">+ TAMBAH DATA BARU (PERMANEN)</button>
-    <input type="text" id="searchInput" class="search-bar" placeholder="Cari taman di database..." onkeyup="render()">
+    <input type="text" id="searchInput" class="search-bar" placeholder="Cari taman..." onkeyup="render()">
     
     <div class="stats-bar">
         <div class="stat-box">STATUS: <span style="color:var(--primary)">DATABASE LIVE</span></div>
-        <div class="stat-box">TOTAL DATA: <span id="count">0</span>+</div>
+        <div class="stat-box">TOTAL DATA: <span id="count">0</span></div>
     </div>
 
     <div id="mainGrid" class="taman-grid"></div>
-    <button id="loadMoreBtn" class="load-more" onclick="loadMore()" style="display:none;">MUAT DATA LAGI...</button>
 </div>
 
 <div id="formModal" class="modal">
     <div class="modal-content">
-        <h2 style="color:var(--secondary)">Simpan ke Cloud</h2>
+        <h2 style="color:var(--secondary)">Editor Database Cloud</h2>
         <input type="hidden" id="f-id">
         <input type="text" id="f-name" placeholder="Nama Taman">
-        <input type="text" id="f-loc" placeholder="Wilayah">
+        <input type="text" id="f-loc" placeholder="Lokasi/Wilayah">
         <input type="number" id="f-rate" step="0.1" placeholder="Rating (1-5)">
-        <button onclick="saveToCloud()" style="width:100%; padding:10px; background:var(--primary); font-weight:bold; cursor:pointer; border:none; border-radius:5px;">SIMPAN PERMANEN</button>
-        <button onclick="closeForm()" style="width:100%; padding:10px; background:transparent; color:#fff; border:none; cursor:pointer; margin-top:10px;">BATAL</button>
+        <textarea id="f-desc" placeholder="Tulis deskripsi taman di sini..."></textarea>
+        <button onclick="saveToCloud()" style="width:100%; padding:12px; background:var(--primary); font-weight:bold; cursor:pointer; border:none; border-radius:5px; margin-top:10px;">SIMPAN PERMANEN</button>
+        <button onclick="closeForm()" style="width:100%; padding:10px; background:transparent; color:#fff; border:none; cursor:pointer; margin-top:5px;">BATAL</button>
     </div>
 </div>
 
 <footer>
     <h2 style="color:var(--primary)">TAMAN KOTA INDONESIA</h2>
-    <p style="color:#888; margin-top:10px;">Directory taman terlengkap di Indonesia</p>
     <a href="mailto:bibixse@gmail.com" class="btn-kontak">KONTAK SAYA</a>
 </footer>
 
 <script>
-    // MASUKIN CONFIG FIREBASE LU DI SINI
- const firebaseConfig = {
+    // === KONFIGURASI FIREBASE (PASTE PUNYA LU DI SINI) ===
+const firebaseConfig = {
   apiKey: "AIzaSyDRi02GsLASvx7CIw2wXbx_nNi8uCLoLQA",
   authDomain: "taman-kota-78ca2.firebaseapp.com",
   projectId: "taman-kota-78ca2",
@@ -92,12 +142,11 @@
     const db = firebase.firestore();
 
     let cloudDb = [];
-    let limit = 30;
     let isAdmin = false;
 
-    // Login Credentials
-    const ADM_USER = "YmliaXhzZQ=="; // bibixse
-    const ADM_PASS = "YmliaXhzZTExcXFhYQ=="; // bibixse11qqaa
+    // Login (Username: bibixse | Password: bibixse11qqaa)
+    const ADM_USER = "YmliaXhzZQ=="; 
+    const ADM_PASS = "YmliaXhzZTExcXFhYQ=="; 
 
     function loadData() {
         db.collection("taman").orderBy("r", "desc").onSnapshot((snapshot) => {
@@ -105,69 +154,31 @@
             snapshot.forEach((doc) => {
                 cloudDb.push({ id: doc.id, ...doc.data() });
             });
-            
-            // JIKA FIREBASE MASIH KOSONG, KITA ISI PAKE DATA UTAMA (JANJI GUE)
-            if (cloudDb.length === 0) {
-                generateInitialData();
-            }
             render();
         });
-    }
-
-    function generateInitialData() {
-        console.log("Mengisi data utama...");
-        const initial = [
-            { n: "Taman Depan Rumah", l: "Lokal", r: 5.0 },
-            { n: "Dunia Fantasi (Dufan)", l: "Ancol", r: 4.8 }
-        ];
-        
-        initial.forEach(data => {
-            db.collection("taman").add(data);
-        });
-
-        // Tambah 50 data random biar database nggak kelihatan sepi
-        const provs = ["Jakarta", "Surabaya", "Bandung", "Sanggau", "Papua", "Bali", "Medan", "Bekasi"];
-        const types = ["Taman Kota", "Hutan Lindung", "RTH", "Kebun Raya"];
-        for (let i = 0; i < 50; i++) {
-            db.collection("taman").add({
-                n: `${types[i % types.length]} ${provs[i % provs.length]} Area-${i}`,
-                l: provs[i % provs.length],
-                r: parseFloat((Math.random() * (4.9 - 3.0) + 3.0).toFixed(1))
-            });
-        }
     }
 
     function render() {
         let h = "";
         const q = document.getElementById('searchInput').value.toLowerCase();
         const filtered = cloudDb.filter(x => x.n.toLowerCase().includes(q) || x.l.toLowerCase().includes(q));
-        const displayData = filtered.slice(0, limit);
 
-        displayData.forEach(t => {
+        filtered.forEach(t => {
             h += `<div class="card">
                 <div style="font-size:10px; color:var(--secondary); font-weight:bold;">${t.l}</div>
                 <h3>📍 ${t.n}</h3>
                 <div style="color:var(--secondary); font-weight:bold;">⭐ ${t.r.toFixed(1)} / 5.0</div>
-                ${isAdmin ? `<button class="admin-edit-btn" onclick="showForm('${t.id}')">EDIT</button>` : ''}
+                <div class="card-desc">${t.d || 'Tidak ada deskripsi tersedia.'}</div>
+                ${isAdmin ? `
+                <div class="admin-controls">
+                    <button class="btn-edit" onclick="showForm('${t.id}')">EDIT</button>
+                    <button class="btn-delete" onclick="deleteData('${t.id}')">HAPUS</button>
+                </div>` : ''}
             </div>`;
         });
 
         document.getElementById('mainGrid').innerHTML = h;
-        document.getElementById('count').innerText = (cloudDb.length > 50000) ? cloudDb.length.toLocaleString() : "55,120";
-        document.getElementById('loadMoreBtn').style.display = filtered.length > limit ? 'block' : 'none';
-    }
-
-    function loginAdmin() {
-        const user = prompt("Username:");
-        const pass = prompt("Password:");
-        if(btoa(user) === ADM_USER && btoa(pass) === ADM_PASS) {
-            isAdmin = true;
-            document.getElementById('btnAdd').style.display = 'block';
-            document.getElementById('loginBtn').innerText = "LOGOUT ADMIN";
-            document.getElementById('loginBtn').onclick = () => location.reload();
-            render();
-            alert("Akses Admin Aktif! Halo Bibixse.");
-        } else { alert("Data Login Salah!"); }
+        document.getElementById('count').innerText = cloudDb.length.toLocaleString();
     }
 
     function saveToCloud() {
@@ -175,13 +186,34 @@
         const data = {
             n: document.getElementById('f-name').value,
             l: document.getElementById('f-loc').value,
-            r: parseFloat(document.getElementById('f-rate').value)
+            r: parseFloat(document.getElementById('f-rate').value),
+            d: document.getElementById('f-desc').value
         };
+
         if(id) {
             db.collection("taman").doc(id).update(data).then(() => { closeForm(); });
         } else {
             db.collection("taman").add(data).then(() => { closeForm(); });
         }
+    }
+
+    function deleteData(id) {
+        if(confirm("Yakin mau hapus taman ini selamanya?")) {
+            db.collection("taman").doc(id).delete();
+        }
+    }
+
+    function loginAdmin() {
+        const user = prompt("Username Admin:");
+        const pass = prompt("Password Admin:");
+        if(btoa(user) === ADM_USER && btoa(pass) === ADM_PASS) {
+            isAdmin = true;
+            document.getElementById('btnAdd').style.display = 'block';
+            document.getElementById('loginBtn').innerText = "LOGOUT ADMIN";
+            document.getElementById('loginBtn').onclick = () => location.reload();
+            render();
+            alert("Akses Diterima. Halo Bibixse!");
+        } else { alert("Data Login Salah!"); }
     }
 
     function showForm(id = null) {
@@ -191,22 +223,19 @@
             document.getElementById('f-name').value = item.n;
             document.getElementById('f-loc').value = item.l;
             document.getElementById('f-rate').value = item.r;
+            document.getElementById('f-desc').value = item.d || "";
         } else {
             document.getElementById('f-id').value = "";
             document.getElementById('f-name').value = "";
             document.getElementById('f-loc').value = "";
             document.getElementById('f-rate').value = "";
+            document.getElementById('f-desc').value = "";
         }
         document.getElementById('formModal').style.display = 'flex';
     }
 
-    function loadMore() { limit += 30; render(); }
     function closeForm() { document.getElementById('formModal').style.display = 'none'; }
-    function updateClock() {
-        const now = new Date();
-        document.getElementById('digitalClock').innerText = now.toLocaleTimeString();
-    }
-    
+    function updateClock() { document.getElementById('digitalClock').innerText = new Date().toLocaleTimeString(); }
     setInterval(updateClock, 1000);
     window.onload = loadData;
 </script>
