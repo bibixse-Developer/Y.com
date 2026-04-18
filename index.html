@@ -66,7 +66,6 @@
         .stat-box { 
             background: var(--card-bg); padding: 12px; border-radius: 8px; 
             border-left: 4px solid var(--primary); flex: 1; min-width: 150px; font-size: 14px;
-            display: flex; flex-direction: column; justify-content: center;
         }
 
         .taman-grid {
@@ -138,12 +137,8 @@
     </div>
 
     <div class="stats-bar">
-        <div class="stat-box">
-            <span>VISIT:</span>
-            <img src="https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Ftamankotaindonesia.my.id&count_bg=%232ECC71&title_bg=%23121D12&icon=&icon_color=%23E7E7E7&title=VIEWS&edge_flat=true" alt="Views" style="width: 100px; margin-top: 5px;">
-        </div>
+        <div class="stat-box">STATUS: <span style="color:var(--primary)">DATABASE ONLINE</span></div>
         <div class="stat-box">TOTAL DATA: <span id="count">0</span>+</div>
-        <div class="stat-box">ONLINE NOW: <span id="onlineNow" style="color:var(--secondary)">1</span></div>
     </div>
 
     <div id="mainGrid" class="taman-grid"></div>
@@ -171,7 +166,9 @@
     let filteredDb = [];
     let limit = 30;
     let isAdmin = false;
-    const ADMIN = "bibixse@gmail.com";
+
+    // Password yang di-encode (11qq@@aa menjadi MTFxcUBBYWE=)
+    const SECRET_KEY = "MTFxcUBBYWE="; 
 
     function updateClock() {
         const now = new Date();
@@ -182,28 +179,24 @@
     }
     setInterval(updateClock, 1000);
 
-    function handleOnline() {
-        // Online Now Jujur berdasarkan Jam Sibuk
-        const hour = new Date().getHours();
-        let fixOnline = (hour >= 8 && hour <= 22) ? 14 : 2;
-        document.getElementById('onlineNow').innerText = fixOnline;
-    }
-
     function loginAdmin() {
-        const input = prompt("Masukkan Email Khusus Admin:");
-        if(input === ADMIN) {
+        const pass = prompt("Masukkan Password Admin:");
+        
+        // Cek password dengan verifikasi Base64
+        if(btoa(pass) === SECRET_KEY) {
             isAdmin = true;
             document.getElementById('btnAdd').style.display = 'block';
             document.getElementById('loginBtn').innerText = "LOGOUT ADMIN";
             document.getElementById('loginBtn').onclick = () => location.reload();
             render();
             alert("Akses Admin Aktif!");
-        } else { alert("Email tidak terdaftar."); }
+        } else {
+            alert("Password Salah! Akses Ditolak.");
+        }
     }
 
     function init() {
         updateClock();
-        handleOnline();
         const total = 55120;
         const provs = ["Jakarta", "Surabaya", "Bandung", "Sanggau", "Papua", "Bali", "Medan", "Bekasi", "Sumatera", "Sulawesi", "Kalimantan"];
         const types = ["Taman Kota", "Hutan Lindung", "RTH", "Kebun Raya", "Taman Wisata", "Taman Nasional", "Hutan Kota"];
@@ -235,7 +228,7 @@
                 ${isAdmin ? `<button class="admin-edit-btn" onclick="showForm(${t.id})">EDIT DATA</button>` : ''}
             </div>`;
         });
-        if (limit < filteredDb.length) h += `<button class="load-more-btn" onclick="loadMore()">MUAT 1.000 DATA LAGI...</button>`;
+        if (limit < filteredDb.length) h += `<button class="load-more-btn" onclick="loadMore()">MUAT DATA LAGI...</button>`;
         document.getElementById('mainGrid').innerHTML = h;
         document.getElementById('count').innerText = filteredDb.length.toLocaleString();
     }
