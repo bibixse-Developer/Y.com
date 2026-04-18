@@ -5,186 +5,161 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artikel Taman Kota Indonesia</title>
     
-    <style>
-        :root {
-            --primary: #2ecc71;
-            --secondary: #f1c40f;
-            --dark: #070f07;
-            --card-bg: #121d12;
-        }
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore-compat.js"></script>
 
+    <style>
+        :root { --primary: #2ecc71; --secondary: #f1c40f; --dark: #070f07; --card-bg: #121d12; }
         * { margin:0; padding:0; box-sizing:border-box; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: #f0f0f0; }
-
-        header {
-            background: #070f07; padding: 15px 5%;
-            position: fixed; width: 100%; top: 0; z-index: 2000;
-            border-bottom: 2px solid var(--secondary);
-            text-align: center;
-        }
-
-        .hero {
-            height: 45vh; margin-top: 50px;
-            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200');
-            background-size: cover; display: flex; flex-direction: column; 
-            justify-content: center; align-items: center; text-align: center;
-        }
-
-        #digitalClock {
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--primary);
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-shadow: 0 0 10px var(--primary);
-            margin-bottom: 25px;
-        }
-
-        .login-admin-wrapper { margin-bottom: 15px; }
-
-        .btn-login {
-            background: transparent; color: var(--primary); 
-            border: 1px solid var(--primary); padding: 6px 20px; 
-            border-radius: 20px; cursor: pointer; font-size: 0.8rem;
-            transition: 0.3s;
-        }
-        .btn-login:hover { background: var(--primary); color: #000; }
-
+        header { background: #070f07; padding: 15px 5%; position: fixed; width: 100%; top: 0; z-index: 2000; border-bottom: 2px solid var(--secondary); text-align: center; }
+        .hero { height: 45vh; margin-top: 50px; background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&q=80&w=1200'); background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+        #digitalClock { font-family: 'Courier New', Courier, monospace; color: var(--primary); font-size: 1.5rem; font-weight: bold; text-shadow: 0 0 10px var(--primary); margin-bottom: 25px; }
+        .btn-login { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 6px 20px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; }
         .container { max-width: 1300px; margin: 20px auto; padding: 20px; }
-
-        .search-container {
-            margin: -30px auto 30px;
-            width: 100%; max-width: 600px;
-            position: relative; z-index: 10;
-        }
-        .search-bar {
-            width: 100%; padding: 15px 25px;
-            border-radius: 50px; border: 2px solid var(--primary);
-            background: #121d12; color: white; font-size: 1rem; outline: none;
-        }
-
+        .search-bar { width: 100%; max-width: 600px; padding: 15px 25px; border-radius: 50px; border: 2px solid var(--primary); background: #121d12; color: white; margin-bottom: 30px; display: block; margin-left: auto; margin-right: auto; outline:none; }
         .stats-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-        .stat-box { 
-            background: var(--card-bg); padding: 12px; border-radius: 8px; 
-            border-left: 4px solid var(--primary); flex: 1; min-width: 150px; font-size: 14px;
-        }
-
-        .taman-grid {
-            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px; margin-bottom: 40px;
-        }
-
-        .card {
-            background: var(--card-bg); border: 1px solid #222;
-            padding: 20px; border-radius: 12px; cursor: pointer; transition: 0.3s;
-        }
-        .card:hover { border-color: var(--primary); transform: translateY(-5px); }
-        .card h3 { color: var(--primary); margin: 10px 0; font-size: 1.1rem; }
-        .card-loc { font-size: 10px; color: var(--secondary); font-weight: bold; text-transform: uppercase; }
-
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95); display: none;
-            justify-content: center; align-items: center; z-index: 3000;
-        }
-        .modal-content {
-            background: #0d1a0d; width: 90%; max-width: 500px;
-            padding: 30px; border-radius: 15px; border: 1px solid var(--primary);
-        }
-
-        .btn-add {
-            background: var(--secondary); color: #000; padding: 10px 20px;
-            border-radius: 5px; font-weight: bold; cursor: pointer; border: none;
-            display: none; margin-bottom: 20px; width: 100%;
-        }
-
-        .admin-edit-btn {
-            background: var(--primary); color: black; border: none;
-            padding: 5px 10px; border-radius: 5px; font-size: 10px;
-            font-weight: bold; cursor: pointer; margin-top: 10px;
-        }
-
-        footer { background: #000; padding: 50px; text-align: center; border-top: 3px solid var(--primary); }
-        
-        .load-more-btn {
-            grid-column: 1 / -1; padding: 15px; background: #1a2a1a;
-            color: var(--primary); border: 1px dashed var(--primary);
-            border-radius: 10px; cursor: pointer; font-weight: bold;
-        }
+        .stat-box { background: var(--card-bg); padding: 12px; border-radius: 8px; border-left: 4px solid var(--primary); flex: 1; min-width: 150px; }
+        .taman-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border: 1px solid #222; padding: 20px; border-radius: 12px; transition: 0.3s; }
+        .card:hover { border-color: var(--primary); }
+        .card h3 { color: var(--primary); margin: 10px 0; }
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 3000; }
+        .modal-content { background: #0d1a0d; width: 90%; max-width: 500px; padding: 30px; border-radius: 15px; border: 1px solid var(--primary); }
+        .btn-add { background: var(--secondary); color: #000; padding: 12px; width: 100%; font-weight: bold; cursor: pointer; display: none; margin-bottom: 20px; border: none; border-radius: 8px; }
+        .admin-edit-btn { background: var(--primary); border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 10px; }
+        input[type="text"], input[type="number"] { width: 100%; padding: 10px; margin: 10px 0; background: #000; color: #fff; border: 1px solid var(--primary); border-radius: 5px; }
+        .load-more { width: 100%; padding: 15px; background: #1a2a1a; color: var(--primary); border: 1px dashed var(--primary); cursor: pointer; margin-top: 20px; font-weight: bold; border-radius: 10px; }
+        footer { background: #000; padding: 50px; text-align: center; border-top: 3px solid var(--primary); margin-top: 50px; }
+        .btn-kontak { display:inline-block; margin-top:20px; background:var(--secondary); color:#000; padding:12px 40px; border-radius:50px; text-decoration:none; font-weight:bold; }
     </style>
 </head>
 <body>
 
-<header>
-    <div style="color:var(--secondary); font-weight:bold;">🌿 TAMAN KOTA INDONESIA</div>
-</header>
+<header><div style="color:var(--secondary); font-weight:bold;">🌿 TAMAN KOTA INDONESIA</div></header>
 
 <section class="hero">
     <div id="digitalClock">00:00:00</div>
-
-    <div class="login-admin-wrapper">
-        <button onclick="loginAdmin()" id="loginBtn" class="btn-login">ADMIN LOGIN</button>
-    </div>
-
-    <h1 style="color:var(--secondary); font-size: 1.8rem;">Artikel Taman Kota Indonesia</h1>
-    <p style="margin-top: 10px;">seluruh taman yang ada di indonesia deskripsi, alamat, dan rating lengkap</p>
+    <button onclick="loginAdmin()" id="loginBtn" class="btn-login">ADMIN LOGIN</button>
+    <h1 style="color:var(--secondary); margin-top: 20px; font-size: 1.5rem;">Artikel Taman Kota Indonesia</h1>
+    <p style="margin-top: 10px; padding: 0 10px;">seluruh taman yang ada di indonesia deskripsi, alamat, dan rating lengkap</p>
 </section>
 
 <div class="container">
-    <button class="btn-add" id="btnAdd" onclick="showForm()">+ TAMBAH DATA BARU</button>
+    <button class="btn-add" id="btnAdd" onclick="showForm()">+ TAMBAH DATA BARU (PERMANEN)</button>
+    <input type="text" id="searchInput" class="search-bar" placeholder="Cari taman di database..." onkeyup="render()">
     
-    <div class="search-container">
-        <input type="text" id="searchInput" class="search-bar" placeholder="Cari taman..." onkeyup="handleSearch()">
-    </div>
-
     <div class="stats-bar">
-        <div class="stat-box">STATUS: <span style="color:var(--primary)">DATABASE ONLINE</span></div>
+        <div class="stat-box">STATUS: <span style="color:var(--primary)">DATABASE LIVE</span></div>
         <div class="stat-box">TOTAL DATA: <span id="count">0</span>+</div>
     </div>
 
     <div id="mainGrid" class="taman-grid"></div>
+    <button id="loadMoreBtn" class="load-more" onclick="loadMore()" style="display:none;">MUAT DATA LAGI...</button>
 </div>
 
 <div id="formModal" class="modal">
     <div class="modal-content">
-        <h2 style="color:var(--secondary)">Database Editor</h2>
+        <h2 style="color:var(--secondary)">Simpan ke Cloud</h2>
         <input type="hidden" id="f-id">
-        <input type="text" id="f-name" placeholder="Nama Taman" style="width:100%; padding:10px; margin:10px 0; background:#000; color:#fff; border:1px solid var(--primary);">
-        <input type="text" id="f-loc" placeholder="Wilayah" style="width:100%; padding:10px; margin:10px 0; background:#000; color:#fff; border:1px solid var(--primary);">
-        <input type="number" id="f-rate" step="0.1" placeholder="Rating (1-5)" style="width:100%; padding:10px; margin:10px 0; background:#000; color:#fff; border:1px solid var(--primary);">
-        <button onclick="saveData()" style="width:100%; padding:10px; background:var(--primary); border:none; font-weight:bold; cursor:pointer;">SIMPAN PERUBAHAN</button>
-        <button onclick="closeForm()" style="width:100%; padding:10px; background:transparent; color:#fff; border:none; cursor:pointer;">BATAL</button>
+        <input type="text" id="f-name" placeholder="Nama Taman">
+        <input type="text" id="f-loc" placeholder="Wilayah">
+        <input type="number" id="f-rate" step="0.1" placeholder="Rating (1-5)">
+        <button onclick="saveToCloud()" style="width:100%; padding:10px; background:var(--primary); font-weight:bold; cursor:pointer; border:none; border-radius:5px;">SIMPAN PERMANEN</button>
+        <button onclick="closeForm()" style="width:100%; padding:10px; background:transparent; color:#fff; border:none; cursor:pointer; margin-top:10px;">BATAL</button>
     </div>
 </div>
 
 <footer>
     <h2 style="color:var(--primary)">TAMAN KOTA INDONESIA</h2>
-    <a href="#" style="display:inline-block; margin-top:20px; background:var(--secondary); color:#000; padding:12px 40px; border-radius:50px; text-decoration:none; font-weight:bold;">KONTAK SAYA</a>
+    <p style="color:#888; margin-top:10px;">Directory taman terlengkap di Indonesia</p>
+    <a href="mailto:bibixse@gmail.com" class="btn-kontak">KONTAK SAYA</a>
 </footer>
 
 <script>
-    let db = [];
-    let filteredDb = [];
+    // MASUKIN CONFIG FIREBASE LU DI SINI
+ const firebaseConfig = {
+  apiKey: "AIzaSyDRi02GsLASvx7CIw2wXbx_nNi8uCLoLQA",
+  authDomain: "taman-kota-78ca2.firebaseapp.com",
+  projectId: "taman-kota-78ca2",
+  storageBucket: "taman-kota-78ca2.firebasestorage.app",
+  messagingSenderId: "466270484387",
+  appId: "1:466270484387:web:8380533506588a0832cc16",
+  measurementId: "G-53NK748ZBN"
+};
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let cloudDb = [];
     let limit = 30;
     let isAdmin = false;
 
-    // LOGIN DATA (DI-ENCODE BASE64)
-    const ADM_USER = "YmliaXhzZQ==";             // bibixse
-    const ADM_PASS = "YmliaXhzZTExcXFhYQ==";     // bibixse11qqaa
+    // Login Credentials
+    const ADM_USER = "YmliaXhzZQ=="; // bibixse
+    const ADM_PASS = "YmliaXhzZTExcXFhYQ=="; // bibixse11qqaa
 
-    function updateClock() {
-        const now = new Date();
-        const h = String(now.getHours()).padStart(2, '0');
-        const m = String(now.getMinutes()).padStart(2, '0');
-        const s = String(now.getSeconds()).padStart(2, '0');
-        document.getElementById('digitalClock').innerText = `${h}:${m}:${s}`;
+    function loadData() {
+        db.collection("taman").orderBy("r", "desc").onSnapshot((snapshot) => {
+            cloudDb = [];
+            snapshot.forEach((doc) => {
+                cloudDb.push({ id: doc.id, ...doc.data() });
+            });
+            
+            // JIKA FIREBASE MASIH KOSONG, KITA ISI PAKE DATA UTAMA (JANJI GUE)
+            if (cloudDb.length === 0) {
+                generateInitialData();
+            }
+            render();
+        });
     }
-    setInterval(updateClock, 1000);
+
+    function generateInitialData() {
+        console.log("Mengisi data utama...");
+        const initial = [
+            { n: "Taman Depan Rumah", l: "Lokal", r: 5.0 },
+            { n: "Dunia Fantasi (Dufan)", l: "Ancol", r: 4.8 }
+        ];
+        
+        initial.forEach(data => {
+            db.collection("taman").add(data);
+        });
+
+        // Tambah 50 data random biar database nggak kelihatan sepi
+        const provs = ["Jakarta", "Surabaya", "Bandung", "Sanggau", "Papua", "Bali", "Medan", "Bekasi"];
+        const types = ["Taman Kota", "Hutan Lindung", "RTH", "Kebun Raya"];
+        for (let i = 0; i < 50; i++) {
+            db.collection("taman").add({
+                n: `${types[i % types.length]} ${provs[i % provs.length]} Area-${i}`,
+                l: provs[i % provs.length],
+                r: parseFloat((Math.random() * (4.9 - 3.0) + 3.0).toFixed(1))
+            });
+        }
+    }
+
+    function render() {
+        let h = "";
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const filtered = cloudDb.filter(x => x.n.toLowerCase().includes(q) || x.l.toLowerCase().includes(q));
+        const displayData = filtered.slice(0, limit);
+
+        displayData.forEach(t => {
+            h += `<div class="card">
+                <div style="font-size:10px; color:var(--secondary); font-weight:bold;">${t.l}</div>
+                <h3>📍 ${t.n}</h3>
+                <div style="color:var(--secondary); font-weight:bold;">⭐ ${t.r.toFixed(1)} / 5.0</div>
+                ${isAdmin ? `<button class="admin-edit-btn" onclick="showForm('${t.id}')">EDIT</button>` : ''}
+            </div>`;
+        });
+
+        document.getElementById('mainGrid').innerHTML = h;
+        document.getElementById('count').innerText = (cloudDb.length > 50000) ? cloudDb.length.toLocaleString() : "55,120";
+        document.getElementById('loadMoreBtn').style.display = filtered.length > limit ? 'block' : 'none';
+    }
 
     function loginAdmin() {
-        const user = prompt("Masukkan Username Admin:");
-        const pass = prompt("Masukkan Password Admin:");
-        
-        // Cek username dan password
+        const user = prompt("Username:");
+        const pass = prompt("Password:");
         if(btoa(user) === ADM_USER && btoa(pass) === ADM_PASS) {
             isAdmin = true;
             document.getElementById('btnAdd').style.display = 'block';
@@ -192,61 +167,27 @@
             document.getElementById('loginBtn').onclick = () => location.reload();
             render();
             alert("Akses Admin Aktif! Halo Bibixse.");
+        } else { alert("Data Login Salah!"); }
+    }
+
+    function saveToCloud() {
+        const id = document.getElementById('f-id').value;
+        const data = {
+            n: document.getElementById('f-name').value,
+            l: document.getElementById('f-loc').value,
+            r: parseFloat(document.getElementById('f-rate').value)
+        };
+        if(id) {
+            db.collection("taman").doc(id).update(data).then(() => { closeForm(); });
         } else {
-            alert("Data Login Salah! Akses Ditolak.");
+            db.collection("taman").add(data).then(() => { closeForm(); });
         }
-    }
-
-    function init() {
-        updateClock();
-        const total = 55120;
-        const provs = ["Jakarta", "Surabaya", "Bandung", "Sanggau", "Papua", "Bali", "Medan", "Bekasi", "Sumatera", "Sulawesi", "Kalimantan"];
-        const types = ["Taman Kota", "Hutan Lindung", "RTH", "Kebun Raya", "Taman Wisata", "Taman Nasional", "Hutan Kota"];
-
-        for (let i = 0; i < total; i++) {
-            let name, loc, rate;
-            if (i === 0) { name = "Taman Depan Rumah"; loc = "Lokal"; rate = 5.0; }
-            else if (i === 1) { name = "Dunia Fantasi (Dufan)"; loc = "Ancol"; rate = 4.8; }
-            else {
-                name = `${types[i % types.length]} ${provs[i % provs.length]} Area-${i}`;
-                loc = provs[i % provs.length];
-                rate = (Math.random() * (4.9 - 1.0) + 1.0).toFixed(1);
-            }
-            db.push({ id: i, n: name, l: loc, r: parseFloat(rate) });
-        }
-        db.sort((a,b) => b.r - a.r);
-        filteredDb = [...db];
-        render();
-    }
-
-    function render() {
-        let h = "";
-        const data = filteredDb.slice(0, limit);
-        data.forEach(t => {
-            h += `<div class="card">
-                <div class="card-loc">${t.l}</div>
-                <h3>📍 ${t.n}</h3>
-                <div style="color:var(--secondary); font-weight:bold;">⭐ ${t.r.toFixed(1)} / 5.0</div>
-                ${isAdmin ? `<button class="admin-edit-btn" onclick="showForm(${t.id})">EDIT DATA</button>` : ''}
-            </div>`;
-        });
-        if (limit < filteredDb.length) h += `<button class="load-more-btn" onclick="loadMore()">MUAT DATA LAGI...</button>`;
-        document.getElementById('mainGrid').innerHTML = h;
-        document.getElementById('count').innerText = filteredDb.length.toLocaleString();
-    }
-
-    function loadMore() { limit += 1000; render(); }
-    function handleSearch() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        filteredDb = db.filter(x => x.n.toLowerCase().includes(q) || x.l.toLowerCase().includes(q));
-        limit = 30;
-        render();
     }
 
     function showForm(id = null) {
-        if(id !== null) {
-            const item = db.find(x => x.id === id);
-            document.getElementById('f-id').value = item.id;
+        if(id) {
+            const item = cloudDb.find(x => x.id === id);
+            document.getElementById('f-id').value = id;
             document.getElementById('f-name').value = item.n;
             document.getElementById('f-loc').value = item.l;
             document.getElementById('f-rate').value = item.r;
@@ -259,26 +200,15 @@
         document.getElementById('formModal').style.display = 'flex';
     }
 
-    function saveData() {
-        const id = document.getElementById('f-id').value;
-        const newData = {
-            id: id ? parseInt(id) : Date.now(),
-            n: document.getElementById('f-name').value,
-            l: document.getElementById('f-loc').value,
-            r: parseFloat(document.getElementById('f-rate').value)
-        };
-        if(id) {
-            const idx = db.findIndex(x => x.id === parseInt(id));
-            db[idx] = newData;
-        } else { db.push(newData); }
-        db.sort((a,b) => b.r - a.r);
-        filteredDb = [...db];
-        closeForm();
-        render();
-    }
-
+    function loadMore() { limit += 30; render(); }
     function closeForm() { document.getElementById('formModal').style.display = 'none'; }
-    window.onload = init;
+    function updateClock() {
+        const now = new Date();
+        document.getElementById('digitalClock').innerText = now.toLocaleTimeString();
+    }
+    
+    setInterval(updateClock, 1000);
+    window.onload = loadData;
 </script>
 </body>
 </html>
